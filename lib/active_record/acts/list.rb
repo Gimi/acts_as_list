@@ -80,8 +80,8 @@ module ActiveRecord
       # the first in the list of all chapters.
       module InstanceMethods
         # Insert the item at the given position (defaults to the top position of 1).
-        def insert_at(position = 1)
-          insert_at_position(position)
+        def insert_at(position = 1, order = :asc)
+          insert_at_position(position, order)
         end
 
         # Swap positions with the next lower item, if one exists.
@@ -250,9 +250,16 @@ module ActiveRecord
             )
           end
 
-          def insert_at_position(position)
+          def insert_at_position(position, order = :asc)
             remove_from_list
-            increment_positions_on_lower_items(position)
+            case order
+            when :asc
+              increment_positions_on_lower_items(position)
+            when :desc
+              decrement_positions_on_higher_items(position)
+            else
+              raise ArgumentError, "Unknow order #{order.inspect}, only :asc and :desc are accepted."
+            end
             self.update_attribute(position_column, position)
           end
       end 
