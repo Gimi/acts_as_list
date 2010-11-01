@@ -69,7 +69,7 @@ module ActiveRecord
             #{scope_condition_method}
 
             before_destroy :decrement_positions_on_lower_items
-            before_create  :add_to_list_bottom
+            #{"before_create  :add_to_list_bottom" unless configuration[:manual] === true}
           EOV
         end
       end
